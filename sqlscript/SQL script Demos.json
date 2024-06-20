@@ -1,0 +1,20 @@
+{
+	"name": "SQL script Demos",
+	"properties": {
+		"folder": {
+			"name": "DEMOS"
+		},
+		"content": {
+			"query": "-- select * from sys.dm_external_data_processed;\n\n-- select * from sys.configurations;\n\n-- select * from sys.configurations where name like 'Data Processed%';\n\n-- sp_set_data_processed_limit\n-- @type=N'monthly',\n-- @limit_tb=4;\n\n\n-- OPENROWSET Functions\n\n-- SELECT\n--     TOP 100 *\n-- FROM\n--     OPENROWSET(\n--         BULK 'https://nycanalyticsdl1611.dfs.core.windows.net/nyc-taxi-date/raw/taxi_zone.csv',\n--         FORMAT = 'CSV',\n--         PARSER_VERSION = '2.0'\n--     ) AS [result];\n\n\nSELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'abfss://nyc-taxi-date@nycanalyticsdl1611.dfs.core.windows.net/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE,\n        FIELDTERMINATOR = ',',\n        ROWTERMINATOR = '\\n'\n    ) AS [result];\n\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"name": "1_explore_taxi_data",
+	"properties": {
+		"folder": {
+			"name": "nyc_taxi/discovery"
+		},
+		"content": {
+			"query": "-- select * from sys.dm_external_data_processed;\n\n-- select * from sys.configurations;\n\n-- select * from sys.configurations where name like 'Data Processed%';\n\n-- sp_set_data_processed_limit\n-- @type=N'monthly',\n-- @limit_tb=4;\n\n\n-- OPENROWSET Functions\n\n-- SELECT\n--     TOP 100 *\n-- FROM\n--     OPENROWSET(\n--         BULK 'https://nycanalyticsdl1611.dfs.core.windows.net/nyc-taxi-date/raw/taxi_zone.csv',\n--         FORMAT = 'CSV',\n--         PARSER_VERSION = '2.0'\n--     ) AS [result];\n\n\n-- SELECT\n--     TOP 100 *\n-- FROM\n--     OPENROWSET(\n--         BULK 'abfss://nyc-taxi-date@nycanalyticsdl1611.dfs.core.windows.net/raw/taxi_zone.csv',\n--         FORMAT = 'CSV',\n--         PARSER_VERSION = '2.0',\n--         HEADER_ROW = TRUE,\n--         FIELDTERMINATOR = ',',\n--         ROWTERMINATOR = '\\n'\n--     ) AS [result];\n\n\n-- Examine the Data type of the columns of a csv file:\n\n-- EXEC sp_describe_first_result_set N' SELECT\n--     TOP 500 *\n-- FROM\n--     OPENROWSET(\n--         BULK ''abfss://nyc-taxi-date@nycanalyticsdl1611.dfs.core.windows.net/raw/taxi_zone.csv'',\n--         FORMAT = ''CSV'',\n--         PARSER_VERSION = ''2.0'',\n--         HEADER_ROW = TRUE\n--     ) AS [result]';\n\n\n-- SELECT\n--     MAX(LEN(LocationID)) as len_LocationID,\n--     MAX(LEN(Borough)) as len_Borough,\n--     MAX(LEN(Zone)) as len_Zone,\n--     MAX(LEN(service_zone)) as len_service_zone\n-- FROM\n--     OPENROWSET(\n--         BULK 'abfss://nyc-taxi-date@nycanalyticsdl1611.dfs.core.windows.net/raw/taxi_zone.csv',\n--         FORMAT = 'CSV',\n--         PARSER_VERSION = '2.0',\n--         HEADER_ROW = TRUE,\n--         FIELDTERMINATOR = ',',\n--         ROWTERMINATOR = '\\n'\n--     ) AS [result];\n\n\n-- Use of WITH clause to provide explicit data type (not allowing synapse to give default data type and increasing the size of table)\n\nSELECT\n   TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'abfss://nyc-taxi-date@nycanalyticsdl1611.dfs.core.windows.net/raw/taxi_zone.csv',\n        FORMAT = 'CSV',\n        PARSER_VERSION = '2.0',\n        HEADER_ROW = TRUE\n    ) \n    WITH(\n        LocationID SMALLINT,\n        Borough VARCHAR(15),\n        Zone VARCHAR(50),\n        service_zone VARCHAR(15)\n    ) AS [result];\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
